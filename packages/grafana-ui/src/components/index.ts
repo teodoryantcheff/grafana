@@ -92,3 +92,6 @@ export { FadeTransition } from './transitions/FadeTransition';
 export { SlideOutTransition } from './transitions/SlideOutTransition';
 // Segment
 export { Segment, SegmentAsync, SegmentSelect } from './Segment/';
+
+// Next-gen forms
+export { default as Forms } from './Forms';
