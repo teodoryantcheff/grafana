@@ -36,7 +36,8 @@ export class TablePanelEditorCtrl {
         this.canSetColumns = true;
         break;
       }
-      case 'table': {
+      case 'table':
+      case 'transposed_table': {
         this.columnsHelpMessage = 'Columns and their order are determined by the data query';
       }
     }
