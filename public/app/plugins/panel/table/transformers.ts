@@ -161,6 +161,8 @@ transformers['annotations'] = {
 transformers['table'] = {
   description: 'Table',
   getColumns: data => {
+    console.log('table getColumns'); // FIXME remove
+
     if (!data || data.length === 0) {
       return [];
     }
@@ -204,6 +206,53 @@ transformers['table'] = {
     }
 
     mergeTablesIntoModel(model, ...filteredData);
+  },
+};
+
+transformers['transposed_table'] = {
+  description: 'Transposed Table',
+  getColumns: () => {
+    console.log('transposed getColumns'); // FIXME remove
+    return [];
+  },
+  transform: (data: any[], panel, model) => {
+    if (!data || data.length === 0) {
+      return;
+    }
+    const noTableIndex = _.findIndex(data, d => 'columns' in d && 'rows' in d);
+    if (noTableIndex < 0) {
+      throw {
+        message: `Result of query #${String.fromCharCode(
+          65 + noTableIndex
+        )} is not in table format, try using another transform.`,
+      };
+    }
+
+    const headers = _.map(data[0].columns, 'text');
+
+    if (!_.isEqual(data[0].rows[0], headers)) {
+      data[0].rows.unshift(headers); // Add column names as first row in data
+    }
+
+    const rows = _.zip.apply(_, data[0].rows); // Transpose data array
+
+    // rows.shift(); // remove row duplicating the new column headers
+
+    const cols: any[] = _.map(data[0].rows, row => {
+      const colText = row[0].toString(); // Force string typecast to avoid confusing the renderer with anything else
+      return {
+        text: colText,
+        title: colText,
+      };
+    });
+
+    //data[0].rows = rows;
+    //data[0].columns = cols;
+
+    model.rows = rows;
+    model.columns = cols;
+
+    // mergeTablesIntoModel(model, ...data);
   },
 };
 

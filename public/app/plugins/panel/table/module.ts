@@ -113,7 +113,7 @@ class TablePanelCtrl extends MetricsPanelCtrl {
 
     // automatically correct transform mode based on data
     if (this.dataRaw && this.dataRaw.length) {
-      if (isTableData(this.dataRaw[0])) {
+      if (isTableData(this.dataRaw[0]) && this.panel.transform !== 'transposed_table') {
         this.panel.transform = 'table';
       } else {
         if (this.dataRaw[0].type === 'docs') {

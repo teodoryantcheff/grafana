@@ -1,7 +1,7 @@
 # Golang build container
 FROM golang:1.13.1-alpine
 
-RUN apk add --no-cache gcc g++
+RUN apk add --no-cache gcc g++ git
 
 WORKDIR $GOPATH/src/github.com/grafana/grafana
 
@@ -13,7 +13,11 @@ RUN go mod verify
 COPY pkg pkg
 COPY build.go package.json ./
 
+COPY .git/ ./.git/
+
 RUN go run build.go build
+
+RUN rm -rf ./.git/
 
 # Node build container
 FROM node:10.14.2-alpine
