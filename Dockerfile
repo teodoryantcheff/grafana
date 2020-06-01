@@ -18,7 +18,7 @@ RUN ./node_modules/.bin/grunt build
 
 FROM golang:1.14.2-alpine3.11 as go-builder
 
-RUN apk add --no-cache gcc g++
+RUN apk add --no-cache gcc g++ git
 
 WORKDIR $GOPATH/src/github.com/grafana/grafana
 
@@ -29,7 +29,11 @@ RUN go mod verify
 COPY pkg pkg
 COPY build.go package.json ./
 
+COPY .git/ ./.git/
+
 RUN go run build.go build
+
+RUN rm -rf ./.git/
 
 # Final stage
 FROM alpine:3.11
